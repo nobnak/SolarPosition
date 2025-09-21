@@ -1,170 +1,170 @@
-# 太陽位置計算スクリプト (C# for Unity)
+# Solar Position Calculator (C# for Unity)
 
-日付、緯度経度を入力して、地平座標系における太陽の角度（高度・方位角）を返すC#スクリプトです。
+A C# script that calculates the solar angles (elevation and azimuth) in horizontal coordinate system based on date, time, latitude, and longitude inputs.
 
-## 概要
+## Overview
 
-このスクリプトは以下の機能を提供します：
+This script provides the following functionality:
 
-- **太陽高度角**: 地平線からの角度（0-90度）
-- **太陽方位角**: 北を0度とした時計回りの角度（0-360度）
-- **太陽の状態**: 日中、薄明、夜間の判定
+- **Solar Elevation**: Angle from horizon (0-90 degrees)
+- **Solar Azimuth**: Clockwise angle from north (0-360 degrees)  
+- **Sun State**: Classification of daylight, twilight, and nighttime conditions
 
-## ファイル構成
+## File Structure
 
-### メインファイル
+### Main Files
 
-- **`SolarPositionCalculator.cs`** - 太陽位置計算の核となるクラス
-- **`SolarPositionDemo.cs`** - Unity Inspector上で使用できる実用的なデモ
-- **`SolarPositionTest.cs`** - 動作確認用のテストスクリプト
+- **`Assets/Scripts/SolarPositionCalculator.cs`** - Core solar position calculation class
+- **`Assets/Scripts/SolarPositionDemo.cs`** - Practical demo for Unity Inspector
+- **`Assets/Scripts/SolarPositionTest.cs`** - Test script for validation
 
-## 使用方法
+## Usage
 
-### 1. 基本的な使用方法
+### 1. Basic Usage
 
 ```csharp
 using System;
 
-// 2025年9月21日 12:00:00、東京での太陽位置を計算
+// Calculate solar position for Tokyo on September 21, 2025 at 12:00:00
 DateTime dateTime = new DateTime(2025, 9, 21, 12, 0, 0);
-float latitude = 35.6762f;   // 東京の緯度
-float longitude = 139.6503f; // 東京の経度
+float latitude = 35.6762f;   // Tokyo latitude
+float longitude = 139.6503f; // Tokyo longitude
 
 var result = SolarPositionCalculator.Calculate(dateTime, latitude, longitude);
 
-Debug.Log($"太陽高度角: {result.elevation}°");
-Debug.Log($"太陽方位角: {result.azimuth}°");
-Debug.Log($"太陽の状態: {result.GetSunState()}");
+Debug.Log($"Solar Elevation: {result.elevation}°");
+Debug.Log($"Solar Azimuth: {result.azimuth}°");
+Debug.Log($"Sun State: {result.GetSunState()}");
 ```
 
-### 2. 現在時刻での計算
+### 2. Current Time Calculation
 
 ```csharp
-// 現在時刻での太陽位置を計算
+// Calculate solar position for current time
 var currentResult = SolarPositionCalculator.CalculateNow(35.6762f, 139.6503f);
 Debug.Log(currentResult.ToString());
 ```
 
-## Unity での使用方法
+## Unity Usage
 
-### SolarPositionDemo の使用
+### Using SolarPositionDemo
 
-1. `SolarPositionDemo.cs` をGameObjectにアタッチ
-2. Inspectorで以下のパラメータを設定：
-   - **日時設定**: 年、月、日、時、分
-   - **位置設定**: 緯度、経度
-   - **オプション**: 自動更新、現在時刻使用など
+1. Attach `SolarPositionDemo.cs` to a GameObject
+2. Configure parameters in Inspector:
+   - **Date/Time Settings**: Year, month, day, hour, minute
+   - **Location Settings**: Latitude, longitude
+   - **Options**: Auto-update, use current time, etc.
 
-3. Play モードで実行すると自動的に太陽位置が計算されます
+3. Run in Play mode to automatically calculate solar position
 
-### 便利な機能
+### Convenient Features
 
-- **位置プリセット**: 主要都市の座標がプリセットされています
-- **季節設定**: 夏至、冬至、春分、秋分の日付を簡単に設定
-- **自動更新**: 指定間隔で自動的に再計算
-- **現在時刻**: 現在時刻を使用した計算
+- **Location Presets**: Pre-configured coordinates for major cities
+- **Seasonal Settings**: Easy setup for solstices and equinoxes
+- **Auto Update**: Automatic recalculation at specified intervals
+- **Current Time**: Real-time calculation using system clock
 
-### SolarPositionTest での動作確認
+### Validation with SolarPositionTest
 
-1. `SolarPositionTest.cs` をGameObjectにアタッチ
-2. Play モードで実行すると、様々な条件でのテストが自動実行されます
-3. Consoleで結果を確認できます
+1. Attach `SolarPositionTest.cs` to a GameObject
+2. Run in Play mode to execute comprehensive tests automatically
+3. Check results in Console window
 
-## API リファレンス
+## API Reference
 
-### SolarPositionCalculator クラス
+### SolarPositionCalculator Class
 
-#### メソッド
+#### Methods
 
 - **`Calculate(DateTime dateTime, float latitude, float longitude)`**
-  - 指定された日時と位置での太陽位置を計算
-  - 戻り値: `SolarPosition` 構造体
+  - Calculates solar position for specified date/time and location
+  - Returns: `SolarPosition` struct
 
 - **`CalculateNow(float latitude, float longitude)`**
-  - 現在時刻での太陽位置を計算
-  - 戻り値: `SolarPosition` 構造体
+  - Calculates solar position for current time
+  - Returns: `SolarPosition` struct
 
-### SolarPosition 構造体
+### SolarPosition Struct
 
-#### プロパティ
+#### Properties
 
-- **`elevation`** (float): 太陽高度角（度）
-- **`azimuth`** (float): 太陽方位角（度）
-- **`dateTime`** (DateTime): 計算に使用した日時
-- **`latitude`** (float): 緯度
-- **`longitude`** (float): 経度
+- **`elevation`** (float): Solar elevation angle (degrees)
+- **`azimuth`** (float): Solar azimuth angle (degrees)
+- **`dateTime`** (DateTime): Date/time used for calculation
+- **`latitude`** (float): Latitude
+- **`longitude`** (float): Longitude
 
-#### メソッド
+#### Methods
 
-- **`ToString()`**: 結果を文字列で取得
-- **`GetSunState()`**: 太陽の状態を文字列で取得
+- **`ToString()`**: Get results as formatted string
+- **`GetSunState()`**: Get sun state description as string
 
-## 計算精度
+## Calculation Accuracy
 
-このスクリプトは簡略化された計算式を使用しており、以下の精度を持ちます：
+This script uses simplified calculation formulas with the following accuracy:
 
-- **高度角**: ±0.5度程度の精度
-- **方位角**: ±1.0度程度の精度
+- **Elevation Angle**: Approximately ±0.5° precision
+- **Azimuth Angle**: Approximately ±1.0° precision
 
-より高精度が必要な場合は、VSOP87理論やJPL ephemerisを使用した計算をお勧めします。
+For higher precision requirements, consider using VSOP87 theory or JPL ephemeris calculations.
 
-## パラメータ範囲
+## Parameter Ranges
 
-- **緯度**: -90° ～ +90°
-- **経度**: -180° ～ +180°
-- **日時**: .NET DateTime の対応範囲
+- **Latitude**: -90° to +90°
+- **Longitude**: -180° to +180°
+- **Date/Time**: .NET DateTime supported range
 
-## 使用例
+## Examples
 
-### 主要都市の座標
+### Major City Coordinates
 
 ```csharp
-// 日本の主要都市
-var tokyo = (lat: 35.6762f, lon: 139.6503f);      // 東京
-var osaka = (lat: 34.6937f, lon: 135.5023f);      // 大阪
-var sapporo = (lat: 43.0642f, lon: 141.3469f);    // 札幌
-var naha = (lat: 26.2125f, lon: 127.6792f);       // 那覇
+// Major Japanese cities
+var tokyo = (lat: 35.6762f, lon: 139.6503f);      // Tokyo
+var osaka = (lat: 34.6937f, lon: 135.5023f);      // Osaka
+var sapporo = (lat: 43.0642f, lon: 141.3469f);    // Sapporo
+var naha = (lat: 26.2125f, lon: 127.6792f);       // Naha
 
-// 海外の主要都市
-var newYork = (lat: 40.7128f, lon: -74.0060f);    // ニューヨーク
-var london = (lat: 51.5074f, lon: -0.1278f);      // ロンドン
-var paris = (lat: 48.8566f, lon: 2.3522f);       // パリ
-var sydney = (lat: -33.8688f, lon: 151.2093f);   // シドニー
+// International cities
+var newYork = (lat: 40.7128f, lon: -74.0060f);    // New York
+var london = (lat: 51.5074f, lon: -0.1278f);      // London
+var paris = (lat: 48.8566f, lon: 2.3522f);       // Paris
+var sydney = (lat: -33.8688f, lon: 151.2093f);   // Sydney
 ```
 
-### 特別な日の計算
+### Special Day Calculations
 
 ```csharp
-// 夏至（6月21日頃）
+// Summer Solstice (around June 21)
 var summerSolstice = SolarPositionCalculator.Calculate(
     new DateTime(2025, 6, 21, 12, 0, 0), 35.6762f, 139.6503f);
 
-// 冬至（12月22日頃）
+// Winter Solstice (around December 22)
 var winterSolstice = SolarPositionCalculator.Calculate(
     new DateTime(2025, 12, 22, 12, 0, 0), 35.6762f, 139.6503f);
 
-// 春分（3月21日頃）
+// Vernal Equinox (around March 21)
 var vernalEquinox = SolarPositionCalculator.Calculate(
     new DateTime(2025, 3, 21, 12, 0, 0), 35.6762f, 139.6503f);
 
-// 秋分（9月23日頃）
+// Autumnal Equinox (around September 23)
 var autumnalEquinox = SolarPositionCalculator.Calculate(
     new DateTime(2025, 9, 23, 12, 0, 0), 35.6762f, 139.6503f);
 ```
 
-## ライセンス
+## License
 
-このスクリプトはパブリックドメインです。自由にご利用ください。
+This script is released into the public domain. Feel free to use it for any purpose.
 
-## 参考文献
+## References
 
 - Astronomical Algorithms by Jean Meeus
 - NOAA Solar Position Calculator
 - Celestial Mechanics and Dynamical Astronomy
 
-## 更新履歴
+## Changelog
 
-- 2025-09-21: 初回リリース
-  - 基本的な太陽位置計算機能
-  - Unity用デモスクリプト
-  - テスト用スクリプト
+- 2025-09-21: Initial Release
+  - Basic solar position calculation functionality
+  - Unity demo script
+  - Test validation script
