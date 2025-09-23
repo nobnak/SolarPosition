@@ -46,8 +46,9 @@ public class SolarPositionTest : MonoBehaviour
         
         try
         {
-            // 東京、2025年春分の日正午での計算
-            DateTime springEquinox = new DateTime(2025, 3, 21, 12, 0, 0);
+            // 東京、2025年春分の日正午での計算（日本時間）
+            DateTime localDateTime = new DateTime(2025, 3, 21, 12, 0, 0);
+            DateTimeOffset springEquinox = new DateTimeOffset(localDateTime, TimeSpan.FromHours(9)); // JST
             var result = SolarPositionCalculator.Calculate(springEquinox, 35.6762f, 139.6503f);
             
             Debug.Log($"東京、春分の日正午: {result}");
@@ -82,10 +83,10 @@ public class SolarPositionTest : MonoBehaviour
         
         var seasons = new[]
         {
-            (name: "春分", date: new DateTime(year, 3, 21, 12, 0, 0)),
-            (name: "夏至", date: new DateTime(year, 6, 21, 12, 0, 0)),
-            (name: "秋分", date: new DateTime(year, 9, 23, 12, 0, 0)),
-            (name: "冬至", date: new DateTime(year, 12, 22, 12, 0, 0))
+            (name: "春分", date: new DateTimeOffset(year, 3, 21, 12, 0, 0, TimeSpan.FromHours(9))),
+            (name: "夏至", date: new DateTimeOffset(year, 6, 21, 12, 0, 0, TimeSpan.FromHours(9))),
+            (name: "秋分", date: new DateTimeOffset(year, 9, 23, 12, 0, 0, TimeSpan.FromHours(9))),
+            (name: "冬至", date: new DateTimeOffset(year, 12, 22, 12, 0, 0, TimeSpan.FromHours(9)))
         };
         
         foreach (var season in seasons)
@@ -109,7 +110,7 @@ public class SolarPositionTest : MonoBehaviour
     {
         Debug.Log("--- 地域別テスト ---");
         
-        DateTime testDate = new DateTime(2025, 6, 21, 12, 0, 0); // 夏至
+        DateTimeOffset testDate = new DateTimeOffset(2025, 6, 21, 12, 0, 0, TimeSpan.Zero); // 夏至（UTC）
         
         var locations = new[]
         {
@@ -144,13 +145,13 @@ public class SolarPositionTest : MonoBehaviour
         
         float lat = 35.6762f; // 東京
         float lon = 139.6503f;
-        DateTime baseDate = new DateTime(2025, 6, 21); // 夏至
+        DateTimeOffset baseDate = new DateTimeOffset(2025, 6, 21, 0, 0, 0, TimeSpan.FromHours(9)); // 夏至（JST）
         
         for (int hour = 0; hour <= 23; hour += 3)
         {
             try
             {
-                DateTime testTime = baseDate.AddHours(hour);
+                DateTimeOffset testTime = baseDate.AddHours(hour);
                 var result = SolarPositionCalculator.Calculate(testTime, lat, lon);
                 
                 string sunState = result.GetSunState();
@@ -170,7 +171,7 @@ public class SolarPositionTest : MonoBehaviour
     {
         Debug.Log("--- エッジケーステスト ---");
         
-        DateTime testDate = new DateTime(2025, 6, 21, 12, 0, 0);
+        DateTimeOffset testDate = new DateTimeOffset(2025, 6, 21, 12, 0, 0, TimeSpan.Zero); // UTC
         
         var edgeCases = new[]
         {

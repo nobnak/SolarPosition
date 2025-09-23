@@ -25,8 +25,9 @@ This script provides the following functionality:
 ```csharp
 using System;
 
-// Calculate solar position for Tokyo on September 21, 2025 at 12:00:00
-DateTime dateTime = new DateTime(2025, 9, 21, 12, 0, 0);
+// Calculate solar position for Tokyo on September 21, 2025 at 12:00:00 JST
+DateTime localDateTime = new DateTime(2025, 9, 21, 12, 0, 0);
+DateTimeOffset dateTime = new DateTimeOffset(localDateTime, TimeSpan.FromHours(9)); // JST
 float latitude = 35.6762f;   // Tokyo latitude
 float longitude = 139.6503f; // Tokyo longitude
 
@@ -43,6 +44,11 @@ Debug.Log($"Sun State: {result.GetSunState()}");
 // Calculate solar position for current time
 var currentResult = SolarPositionCalculator.CalculateNow(35.6762f, 139.6503f);
 Debug.Log(currentResult.ToString());
+
+// Calculate for current time in specific timezone
+var jstResult = SolarPositionCalculator.CalculateNow(35.6762f, 139.6503f, 
+    TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time"));
+Debug.Log(jstResult.ToString());
 ```
 
 ## Unity Usage
@@ -76,12 +82,16 @@ Debug.Log(currentResult.ToString());
 
 #### Methods
 
-- **`Calculate(DateTime dateTime, float latitude, float longitude)`**
-  - Calculates solar position for specified date/time and location
+- **`Calculate(DateTimeOffset dateTime, float latitude, float longitude)`**
+  - Calculates solar position for specified date/time and location (with timezone)
   - Returns: `SolarPosition` struct
 
 - **`CalculateNow(float latitude, float longitude)`**
   - Calculates solar position for current time
+  - Returns: `SolarPosition` struct
+
+- **`CalculateNow(float latitude, float longitude, TimeZoneInfo timeZone)`**
+  - Calculates solar position for current time in specific timezone
   - Returns: `SolarPosition` struct
 
 ### SolarPosition Struct
@@ -90,7 +100,7 @@ Debug.Log(currentResult.ToString());
 
 - **`elevation`** (float): Solar elevation angle (degrees)
 - **`azimuth`** (float): Solar azimuth angle (degrees)
-- **`dateTime`** (DateTime): Date/time used for calculation
+- **`dateTime`** (DateTimeOffset): Date/time with timezone used for calculation
 - **`latitude`** (float): Latitude
 - **`longitude`** (float): Longitude
 
@@ -112,7 +122,7 @@ For higher precision requirements, consider using VSOP87 theory or JPL ephemeris
 
 - **Latitude**: -90° to +90°
 - **Longitude**: -180° to +180°
-- **Date/Time**: .NET DateTime supported range
+- **Date/Time**: .NET DateTimeOffset supported range (includes timezone information)
 
 ## Examples
 
@@ -135,21 +145,25 @@ var sydney = (lat: -33.8688f, lon: 151.2093f);   // Sydney
 ### Special Day Calculations
 
 ```csharp
-// Summer Solstice (around June 21)
+// Summer Solstice (around June 21) - JST
 var summerSolstice = SolarPositionCalculator.Calculate(
-    new DateTime(2025, 6, 21, 12, 0, 0), 35.6762f, 139.6503f);
+    new DateTimeOffset(2025, 6, 21, 12, 0, 0, TimeSpan.FromHours(9)), 35.6762f, 139.6503f);
 
-// Winter Solstice (around December 22)
+// Winter Solstice (around December 22) - JST
 var winterSolstice = SolarPositionCalculator.Calculate(
-    new DateTime(2025, 12, 22, 12, 0, 0), 35.6762f, 139.6503f);
+    new DateTimeOffset(2025, 12, 22, 12, 0, 0, TimeSpan.FromHours(9)), 35.6762f, 139.6503f);
 
-// Vernal Equinox (around March 21)
+// Vernal Equinox (around March 21) - JST
 var vernalEquinox = SolarPositionCalculator.Calculate(
-    new DateTime(2025, 3, 21, 12, 0, 0), 35.6762f, 139.6503f);
+    new DateTimeOffset(2025, 3, 21, 12, 0, 0, TimeSpan.FromHours(9)), 35.6762f, 139.6503f);
 
-// Autumnal Equinox (around September 23)
+// Autumnal Equinox (around September 23) - JST
 var autumnalEquinox = SolarPositionCalculator.Calculate(
-    new DateTime(2025, 9, 23, 12, 0, 0), 35.6762f, 139.6503f);
+    new DateTimeOffset(2025, 9, 23, 12, 0, 0, TimeSpan.FromHours(9)), 35.6762f, 139.6503f);
+
+// UTC calculation example
+var utcResult = SolarPositionCalculator.Calculate(
+    new DateTimeOffset(2025, 6, 21, 3, 0, 0, TimeSpan.Zero), 35.6762f, 139.6503f); // 3:00 UTC = 12:00 JST
 ```
 
 ## License
@@ -162,8 +176,31 @@ This script is released into the public domain. Feel free to use it for any purp
 - NOAA Solar Position Calculator
 - Celestial Mechanics and Dynamical Astronomy
 
+## Important Notes
+
+### Timezone Handling
+
+This calculator uses `DateTimeOffset` for precise timezone-aware calculations. The solar position depends on the exact time including timezone information:
+
+- **Local Time**: Use `new DateTimeOffset(dateTime, TimeZoneInfo.Local.GetUtcOffset(dateTime))`
+- **Specific Timezone**: Use `new DateTimeOffset(dateTime, timeZoneOffset)` 
+- **UTC Time**: Use `new DateTimeOffset(dateTime, TimeSpan.Zero)`
+
+Example:
+```csharp
+// Same moment in time, different representations
+var jstTime = new DateTimeOffset(2025, 6, 21, 12, 0, 0, TimeSpan.FromHours(9));  // 12:00 JST
+var utcTime = new DateTimeOffset(2025, 6, 21, 3, 0, 0, TimeSpan.Zero);          // 03:00 UTC
+// Both represent the same moment and will give identical solar positions for the same location
+```
+
 ## Changelog
 
+- 2025-09-22: DateTimeOffset Update
+  - Changed from `DateTime` to `DateTimeOffset` for timezone-aware calculations
+  - Added timezone-specific `CalculateNow` method
+  - Improved calculation accuracy for different timezones
+  
 - 2025-09-21: Initial Release
   - Basic solar position calculation functionality
   - Unity demo script

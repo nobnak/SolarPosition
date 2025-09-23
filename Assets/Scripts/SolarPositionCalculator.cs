@@ -5,8 +5,10 @@ using UnityEngine;
 /// 太陽位置計算クラス
 /// 日付、緯度経度から地平座標系における太陽の角度（高度・方位角）を計算する
 /// </summary>
-public class SolarPositionCalculator
-{
+public class SolarPositionCalculator {
+
+    #region Definitions
+    
     /// <summary>
     /// 太陽位置の計算結果を格納する構造体
     /// </summary>
@@ -22,7 +24,7 @@ public class SolarPositionCalculator
         
         [Header("計算パラメータ")]
         [Tooltip("計算に使用した日時")]
-        public DateTime dateTime;
+        public DateTimeOffset dateTime;
         
         [Tooltip("緯度（度）")]
         public float latitude;
@@ -36,7 +38,7 @@ public class SolarPositionCalculator
         public override string ToString()
         {
             return $"太陽位置 - 高度: {elevation:F2}°, 方位: {azimuth:F2}° " +
-                   $"(日時: {dateTime:yyyy-MM-dd HH:mm:ss}, 位置: {latitude:F4}°, {longitude:F4}°)";
+                   $"(日時: {dateTime:yyyy-MM-dd HH:mm:ss zzz}, 位置: {latitude:F4}°, {longitude:F4}°)";
         }
         
         /// <summary>
@@ -53,14 +55,18 @@ public class SolarPositionCalculator
         }
     }
     
+    #endregion
+
+    #region Public Interface
+
     /// <summary>
     /// 指定された日時と位置での太陽位置を計算
     /// </summary>
-    /// <param name="dateTime">計算する日時</param>
+    /// <param name="dateTime">計算する日時（タイムゾーン情報を含む）</param>
     /// <param name="latitude">緯度（度、-90～+90）</param>
     /// <param name="longitude">経度（度、-180～+180）</param>
     /// <returns>太陽位置の計算結果</returns>
-    public static SolarPosition Calculate(DateTime dateTime, float latitude, float longitude)
+    public static SolarPosition Calculate(DateTimeOffset dateTime, float latitude, float longitude)
     {
         // 入力値の検証
         if (latitude < -90 || latitude > 90)
@@ -68,7 +74,7 @@ public class SolarPositionCalculator
         if (longitude < -180 || longitude > 180)
             throw new ArgumentException($"経度は-180から180の範囲で指定してください: {longitude}");
         
-        // ユリウス日の計算
+        // ユリウス日の計算（UTCで）
         double julianDay = GetJulianDay(dateTime);
         
         // 太陽の赤道座標を計算
@@ -99,18 +105,38 @@ public class SolarPositionCalculator
     /// <returns>太陽位置の計算結果</returns>
     public static SolarPosition CalculateNow(float latitude, float longitude)
     {
-        return Calculate(DateTime.Now, latitude, longitude);
+        return Calculate(DateTimeOffset.Now, latitude, longitude);
     }
     
     /// <summary>
-    /// ユリウス日を計算
+    /// 指定されたタイムゾーンでの現在時刻での太陽位置を計算
     /// </summary>
-    private static double GetJulianDay(DateTime dateTime)
+    /// <param name="latitude">緯度（度）</param>
+    /// <param name="longitude">経度（度）</param>
+    /// <param name="timeZone">タイムゾーン</param>
+    /// <returns>太陽位置の計算結果</returns>
+    public static SolarPosition CalculateNow(float latitude, float longitude, TimeZoneInfo timeZone)
     {
-        int year = dateTime.Year;
-        int month = dateTime.Month;
-        int day = dateTime.Day;
-        double hour = dateTime.Hour + dateTime.Minute / 60.0 + dateTime.Second / 3600.0;
+        DateTimeOffset now = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZone);
+        return Calculate(now, latitude, longitude);
+    }
+    
+    #endregion
+
+    #region Private Implementation
+
+    /// <summary>
+    /// ユリウス日を計算（UTCベース）
+    /// </summary>
+    private static double GetJulianDay(DateTimeOffset dateTimeOffset)
+    {
+        // UTC時刻で計算
+        DateTime utcDateTime = dateTimeOffset.UtcDateTime;
+        
+        int year = utcDateTime.Year;
+        int month = utcDateTime.Month;
+        int day = utcDateTime.Day;
+        double hour = utcDateTime.Hour + utcDateTime.Minute / 60.0 + utcDateTime.Second / 3600.0 + utcDateTime.Millisecond / 3600000.0;
         
         if (month <= 2)
         {
@@ -223,4 +249,6 @@ public class SolarPositionCalculator
     {
         return radians * 180.0 / Math.PI;
     }
+
+    #endregion
 }
