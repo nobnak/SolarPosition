@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using jp.nobnak.solar;
 
 /// <summary>
 /// 太陽位置計算のデモスクリプト
@@ -150,7 +151,7 @@ public class SolarPositionDemo : MonoBehaviour {
         adjustedElevation = Mathf.Clamp(adjustedElevation, -90f, 90f);
         
         // Quaternion回転を作成
-        Quaternion rotation = CreateSolarRotation(adjustedAzimuth, adjustedElevation);
+        Quaternion rotation = CreateSolarRotation(adjustedAzimuth, adjustedElevation, preset.useYAxisForAzimuth);
         
         // 対象のTransformsに適用
         int successCount = 0;
@@ -164,24 +165,6 @@ public class SolarPositionDemo : MonoBehaviour {
         if (successCount > 0) {
             Debug.Log($"太陽の回転を{successCount}個のTransformに適用しました " +
                      $"(方位角: {adjustedAzimuth:F1}°, 高度: {adjustedElevation:F1}°)");
-        }
-    }
-    
-    /// <summary>
-    /// 太陽位置から回転を作成
-    /// </summary>
-    /// <param name="azimuth">方位角（度）</param>
-    /// <param name="elevation">高度角（度）</param>
-    /// <returns>変換されたQuaternion</returns>
-    private Quaternion CreateSolarRotation(float azimuth, float elevation) {
-        if (preset.useYAxisForAzimuth) {
-            // 一般的な太陽追尾の回転パターン
-            // Y軸回転（方位角）× X軸回転（高度角）
-            return Quaternion.Euler(-elevation, azimuth, 0f);
-        } else {
-            // 別の回転パターン（ライトやカメラ向け）
-            // Z軸回転（方位角）× X軸回転（高度角）
-            return Quaternion.Euler(-elevation, 0f, azimuth);
         }
     }
     
@@ -364,6 +347,25 @@ public class SolarPositionDemo : MonoBehaviour {
         preset.ResetTransformOutput();
         string mode = Application.isPlaying ? "[Runtime]" : "[Editor]";
         Debug.Log($"{mode} Transform出力設定をリセットしました");
+    }
+    
+    /// <summary>
+    /// 太陽位置から回転を作成
+    /// </summary>
+    /// <param name="azimuth">方位角（度）</param>
+    /// <param name="elevation">高度角（度）</param>
+    /// <param name="useYAxisForAzimuth">Y軸を方位角回転に使用するかどうか</param>
+    /// <returns>対応するQuaternion</returns>
+    public static Quaternion CreateSolarRotation(float azimuth, float elevation, bool useYAxisForAzimuth) {
+        if (useYAxisForAzimuth) {
+            // 一般的な太陽追尾の回転パターン
+            // Y軸回転（方位角）× X軸回転（高度角）
+            return Quaternion.Euler(-elevation, azimuth, 0f);
+        } else {
+            // 別の回転パターン（ライトやカメラ向け）
+            // Z軸回転（方位角）× X軸回転（高度角）
+            return Quaternion.Euler(-elevation, 0f, azimuth);
+        }
     }
     
     #endregion

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using jp.nobnak.solar;
 
 /// <summary>
 /// 太陽位置計算のテスト用スクリプト

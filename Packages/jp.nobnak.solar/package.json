@@ -1,0 +1,24 @@
+{
+  "name": "jp.nobnak.solar",
+  "displayName": "Solar Position Calculator",
+  "version": "1.0.0",
+  "description": "A Unity package for calculating solar position (elevation and azimuth angles) in the horizontal coordinate system based on date, time, latitude, and longitude.",
+  "unity": "2019.4",
+  "keywords": [
+    "solar",
+    "position",
+    "astronomy",
+    "sun",
+    "calculation",
+    "elevation",
+    "azimuth",
+    "coordinate",
+    "time"
+  ],
+  "author": {
+    "name": "nobnak",
+    "url": "https://github.com/nobnak"
+  },
+  "category": "Utilities",
+  "dependencies": {}
+}

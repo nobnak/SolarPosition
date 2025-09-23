@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// 太陽位置計算クラス
-/// 日付、緯度経度から地平座標系における太陽の角度（高度・方位角）を計算する
-/// </summary>
-public class SolarPositionCalculator {
+namespace jp.nobnak.solar {
+
+    /// <summary>
+    /// 太陽位置計算クラス
+    /// 日付、緯度経度から地平座標系における太陽の角度（高度・方位角）を計算する
+    /// </summary>
+    public static class SolarPositionCalculator {
 
     #region Definitions
     
@@ -13,8 +15,7 @@ public class SolarPositionCalculator {
     /// 太陽位置の計算結果を格納する構造体
     /// </summary>
     [System.Serializable]
-    public struct SolarPosition
-    {
+    public struct SolarPosition {
         [Header("太陽の角度")]
         [Tooltip("太陽の高度角（地平線からの角度、度）")]
         public float elevation;
@@ -35,8 +36,7 @@ public class SolarPositionCalculator {
         /// <summary>
         /// 結果を文字列として取得
         /// </summary>
-        public override string ToString()
-        {
+        public override string ToString() {
             return $"太陽位置 - 高度: {elevation:F2}°, 方位: {azimuth:F2}° " +
                    $"(日時: {dateTime:yyyy-MM-dd HH:mm:ss zzz}, 位置: {latitude:F4}°, {longitude:F4}°)";
         }
@@ -44,8 +44,7 @@ public class SolarPositionCalculator {
         /// <summary>
         /// 太陽の状態を文字列で取得
         /// </summary>
-        public string GetSunState()
-        {
+        public string GetSunState() {
             if (elevation < -18) return "天文薄明前/後 (太陽は地平線下18°以下)";
             if (elevation < -12) return "天文薄明 (太陽は地平線下12°～18°)";
             if (elevation < -6) return "航海薄明 (太陽は地平線下6°～12°)";
@@ -128,8 +127,7 @@ public class SolarPositionCalculator {
     /// <summary>
     /// ユリウス日を計算（UTCベース）
     /// </summary>
-    private static double GetJulianDay(DateTimeOffset dateTimeOffset)
-    {
+    private static double GetJulianDay(DateTimeOffset dateTimeOffset) {
         // UTC時刻で計算
         DateTime utcDateTime = dateTimeOffset.UtcDateTime;
         
@@ -138,8 +136,7 @@ public class SolarPositionCalculator {
         int day = utcDateTime.Day;
         double hour = utcDateTime.Hour + utcDateTime.Minute / 60.0 + utcDateTime.Second / 3600.0 + utcDateTime.Millisecond / 3600000.0;
         
-        if (month <= 2)
-        {
+        if (month <= 2) {
             year -= 1;
             month += 12;
         }
@@ -157,8 +154,7 @@ public class SolarPositionCalculator {
     /// <summary>
     /// 太陽の赤道座標を計算
     /// </summary>
-    private static (double rightAscension, double declination) GetSolarEquatorialCoordinates(double julianDay)
-    {
+    private static (double rightAscension, double declination) GetSolarEquatorialCoordinates(double julianDay) {
         // J2000.0からの経過日数
         double n = julianDay - 2451545.0;
         
@@ -188,8 +184,7 @@ public class SolarPositionCalculator {
     /// <summary>
     /// 地方時角を計算
     /// </summary>
-    private static double GetLocalHourAngle(double julianDay, double longitude, double rightAscension)
-    {
+    private static double GetLocalHourAngle(double julianDay, double longitude, double rightAscension) {
         // グリニッジ恒星時
         double T = (julianDay - 2451545.0) / 36525.0;
         double gst = (280.46061837 + 360.98564736629 * (julianDay - 2451545.0) + 
@@ -211,8 +206,7 @@ public class SolarPositionCalculator {
     /// 赤道座標から地平座標に変換
     /// </summary>
     private static (double elevation, double azimuth) EquatorialToHorizontal(
-        double rightAscension, double declination, double hourAngle, double latitude)
-    {
+        double rightAscension, double declination, double hourAngle, double latitude) {
         double latRad = Deg2Rad(latitude);
         
         // 高度の計算
@@ -237,18 +231,17 @@ public class SolarPositionCalculator {
     /// <summary>
     /// 度からラジアンに変換
     /// </summary>
-    private static double Deg2Rad(double degrees)
-    {
+    private static double Deg2Rad(double degrees) {
         return degrees * Math.PI / 180.0;
     }
     
     /// <summary>
     /// ラジアンから度に変換
     /// </summary>
-    private static double Rad2Deg(double radians)
-    {
+    private static double Rad2Deg(double radians) {
         return radians * 180.0 / Math.PI;
     }
 
     #endregion
+    }
 }
