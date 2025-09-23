@@ -151,7 +151,7 @@ public class SolarPositionDemo : MonoBehaviour {
         adjustedElevation = Mathf.Clamp(adjustedElevation, -90f, 90f);
         
         // Quaternion回転を作成
-        Quaternion rotation = CreateSolarRotation(adjustedAzimuth, adjustedElevation, preset.useYAxisForAzimuth);
+        Quaternion rotation = CreateSolarRotation(adjustedAzimuth, adjustedElevation);
         
         // 対象のTransformsに適用
         int successCount = 0;
@@ -351,21 +351,15 @@ public class SolarPositionDemo : MonoBehaviour {
     
     /// <summary>
     /// 太陽位置から回転を作成
+    /// Unity標準のYアップ座標系に基づく回転
     /// </summary>
-    /// <param name="azimuth">方位角（度）</param>
-    /// <param name="elevation">高度角（度）</param>
-    /// <param name="useYAxisForAzimuth">Y軸を方位角回転に使用するかどうか</param>
-    /// <returns>対応するQuaternion</returns>
-    public static Quaternion CreateSolarRotation(float azimuth, float elevation, bool useYAxisForAzimuth) {
-        if (useYAxisForAzimuth) {
-            // 一般的な太陽追尾の回転パターン
-            // Y軸回転（方位角）× X軸回転（高度角）
-            return Quaternion.Euler(-elevation, azimuth, 0f);
-        } else {
-            // 別の回転パターン（ライトやカメラ向け）
-            // Z軸回転（方位角）× X軸回転（高度角）
-            return Quaternion.Euler(-elevation, 0f, azimuth);
-        }
+    /// <param name="azimuth">方位角（度、北を0度とした時計回り）</param>
+    /// <param name="elevation">高度角（度、地平線からの角度）</param>
+    /// <returns>太陽方向を向くQuaternion</returns>
+    public static Quaternion CreateSolarRotation(float azimuth, float elevation) {
+        // UnityのYアップ座標系での太陽回転
+        // Y軸回転（方位角）× X軸回転（高度角）
+        return Quaternion.Euler(-elevation, azimuth, 0f);
     }
     
     #endregion
@@ -490,9 +484,6 @@ public class SolarPositionDemo : MonoBehaviour {
         [Range(-90f, 90f)]
         public float elevationOffset = 0f;
         
-        [SerializeField]
-        [Tooltip("Y軸回転を方位角に使用（falseの場合はZ軸）")]
-        public bool useYAxisForAzimuth = true;
         
         [Header("ロケーションプリセット")]
         [SerializeField]
@@ -534,7 +525,6 @@ public class SolarPositionDemo : MonoBehaviour {
             enableTransformOutput = true;
             azimuthOffset = 0f;
             elevationOffset = 0f;
-            useYAxisForAzimuth = true;
         }
         
         /// <summary>
