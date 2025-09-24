@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Mathematics;
+using jp.nobnak.solar;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -90,33 +91,11 @@ public class SunDirectionController : MonoBehaviour {
     /// 太陽の高度角・方位角からローテーションを計算して適用
     /// </summary>
     public void UpdateSunRotation() {
-        var rotation = CalculateSunRotation(elevation, azimuth);
+        var rotation = SolarRotationConverter.CalculateSunRotation(elevation, azimuth);
         transform.rotation = rotation;
         
         // ライトプロパティを更新
         UpdateSunProperties();
-    }
-    
-    /// <summary>
-    /// 太陽の高度角・方位角からローテーションを計算
-    /// </summary>
-    /// <param name="elevationDeg">高度角（度）</param>
-    /// <param name="azimuthDeg">方位角（度、北=0°）</param>
-    /// <returns>太陽方向を向くローテーション</returns>
-    public static Quaternion CalculateSunRotation(float elevationDeg, float azimuthDeg) {
-        // Unity.Mathematics使用
-        var elevationRad = math.radians(elevationDeg);
-        var azimuthRad = math.radians(azimuthDeg);
-        
-        // 太陽の方向ベクトルを計算（Unityの座標系：Y=上、Z=北）
-        var sunDirection = new float3(
-            math.sin(azimuthRad) * math.cos(elevationRad), // X: 東西
-            math.sin(elevationRad),                        // Y: 上下
-            math.cos(azimuthRad) * math.cos(elevationRad)  // Z: 南北
-        );
-        
-        // 太陽方向を向くローテーションを計算
-        return Quaternion.LookRotation(sunDirection, Vector3.up);
     }
     
     /// <summary>

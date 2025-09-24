@@ -124,7 +124,7 @@ public class YearlySolarRotation : MonoBehaviour {
     /// </summary>
     void CalculateAndApplySolarPosition(int dayOfYear) {
         var solarPosition = CalculateSolarPositionForDay(dayOfYear);
-        var rotation = SunDirectionController.CalculateSunRotation(solarPosition.elevation, solarPosition.azimuth);
+        var rotation = SolarRotationConverter.CalculateSunRotation(solarPosition.elevation, solarPosition.azimuth);
         
         currentSolarPosition = solarPosition;
         currentRotation = rotation;
@@ -164,7 +164,7 @@ public class YearlySolarRotation : MonoBehaviour {
         }
         
         var solarPosition = CalculateSolarPositionForDay(dayOfYear);
-        return SunDirectionController.CalculateSunRotation(solarPosition.elevation, solarPosition.azimuth);
+        return SolarRotationConverter.CalculateSunRotation(solarPosition.elevation, solarPosition.azimuth);
     }
     
     /// <summary>
@@ -206,8 +206,8 @@ public class YearlySolarRotation : MonoBehaviour {
         var currentSolar = CalculateSolarPositionForDay(dayIndex + 1);
         var nextSolar = CalculateSolarPositionForDay(nextDayIndex + 1);
         
-        var currentRot = SunDirectionController.CalculateSunRotation(currentSolar.elevation, currentSolar.azimuth);
-        var nextRot = SunDirectionController.CalculateSunRotation(nextSolar.elevation, nextSolar.azimuth);
+        var currentRot = SolarRotationConverter.CalculateSunRotation(currentSolar.elevation, currentSolar.azimuth);
+        var nextRot = SolarRotationConverter.CalculateSunRotation(nextSolar.elevation, nextSolar.azimuth);
         
         // ローテーションを補間
         var interpolatedRotation = Quaternion.Slerp(currentRot, nextRot, t);
