@@ -150,8 +150,8 @@ public class SolarPositionDemo : MonoBehaviour {
         // 高度角を-90~90度の範囲にクランプ
         adjustedElevation = Mathf.Clamp(adjustedElevation, -90f, 90f);
         
-        // Quaternion回転を作成
-        Quaternion rotation = SolarRotationConverter.CalculateSunRotation(adjustedElevation, adjustedAzimuth);
+        // Quaternion回転を作成（Unity.Mathematics最適化、暗示的変換でTransform.rotationに対応）
+        var rotation = SolarRotationConverter.CalculateSunRotation(adjustedElevation, adjustedAzimuth);
         
         // 対象のTransformsに適用
         int successCount = 0;

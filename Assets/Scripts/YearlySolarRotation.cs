@@ -48,7 +48,7 @@ public class YearlySolarRotation : MonoBehaviour {
     [System.NonSerialized] public SolarPositionCalculator.SolarPosition currentSolarPosition;
     
     [Tooltip("現在のローテーション")]
-    [System.NonSerialized] public Quaternion currentRotation = Quaternion.identity;
+    [System.NonSerialized] public quaternion currentRotation = quaternion.identity;
     
     [System.NonSerialized] public bool isAnimating = false;
     [System.NonSerialized] public float animationTime = 0f;
@@ -156,11 +156,11 @@ public class YearlySolarRotation : MonoBehaviour {
     /// </summary>
     /// <param name="dayOfYear">年の日数（1-365/366）</param>
     /// <returns>その日のローテーション</returns>
-    public Quaternion GetRotationForDay(int dayOfYear) {
+    public quaternion GetRotationForDay(int dayOfYear) {
         var daysInYear = GetDaysInYear();
         if (dayOfYear <= 0 || dayOfYear > daysInYear) {
             Debug.LogWarning($"無効な日数です: {dayOfYear} (有効範囲: 1-{daysInYear})");
-            return Quaternion.identity;
+            return quaternion.identity;
         }
         
         var solarPosition = CalculateSolarPositionForDay(dayOfYear);
@@ -171,11 +171,12 @@ public class YearlySolarRotation : MonoBehaviour {
     /// 現在の日付に基づいてローテーションをリアルタイム計算で取得
     /// </summary>
     /// <returns>今日のローテーション</returns>
-    public Quaternion GetTodayRotation() {
+    public quaternion GetTodayRotation() {
         var today = DateTime.Today;
         var dayOfYear = today.DayOfYear;
         return GetRotationForDay(dayOfYear);
     }
+
     
     
     /// <summary>
@@ -210,7 +211,7 @@ public class YearlySolarRotation : MonoBehaviour {
         var nextRot = SolarRotationConverter.CalculateSunRotation(nextSolar.elevation, nextSolar.azimuth);
         
         // ローテーションを補間
-        var interpolatedRotation = Quaternion.Slerp(currentRot, nextRot, t);
+        var interpolatedRotation = math.slerp(currentRot, nextRot, t);
         
         // 現在のデータを更新（補間された値として）
         currentSolarPosition = currentSolar; // 基準として現在の日を使用

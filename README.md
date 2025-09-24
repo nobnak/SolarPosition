@@ -70,11 +70,15 @@ var now = SolarPositionCalculator.CalculateNow(35.6762f, 139.6503f);
 
 ```csharp
 using UnityEngine;
+using Unity.Mathematics;
 using jp.nobnak.solar;
 
-// Convert solar position to Unity rotation
-Quaternion rotation = SolarRotationConverter.CalculateSunRotation(elevation, azimuth);
-transform.rotation = rotation; // Point object toward the sun
+// Convert solar position to Unity rotation (Unity.Mathematics optimized)
+quaternion rotation = SolarRotationConverter.CalculateSunRotation(elevation, azimuth);
+transform.rotation = rotation; // Implicit conversion to UnityEngine.Quaternion
+
+// Direction vector (also supports implicit conversion to Vector3)
+float3 sunDirection = SolarRotationConverter.CalculateSunDirection(elevation, azimuth);
 ```
 
 ## Unity Demo Component

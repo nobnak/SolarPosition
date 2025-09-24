@@ -92,7 +92,7 @@ public class SunDirectionController : MonoBehaviour {
     /// </summary>
     public void UpdateSunRotation() {
         var rotation = SolarRotationConverter.CalculateSunRotation(elevation, azimuth);
-        transform.rotation = rotation;
+        transform.rotation = rotation; // 暗示的変換でUnityEngine.Quaternionに変換される
         
         // ライトプロパティを更新
         UpdateSunProperties();
@@ -100,9 +100,11 @@ public class SunDirectionController : MonoBehaviour {
     
     /// <summary>
     /// 現在の太陽方向ベクトルを取得
+    /// Unity.Mathematics版、Vector3への暗示的変換対応
     /// </summary>
-    public Vector3 GetSunDirection() {
-        return transform.rotation * Vector3.forward;
+    public float3 GetSunDirection() {
+        var rotation = (quaternion)transform.rotation;
+        return math.rotate(rotation, new float3(0, 0, 1)); // forward vector
     }
     
     /// <summary>
