@@ -11,21 +11,18 @@ A Unity package for calculating solar position (elevation and azimuth angles) ba
 
 ## Installation
 
-### Via Package Manager
+### Via OpenUPM (Recommended)
 
-1. Open Unity Package Manager
-2. Click `+` → `Add package from git URL...`
-3. Enter: `https://github.com/nobnak/jp.nobnak.solar.git`
-
-### Via Git URL in manifest.json
-
-```json
-{
-  "dependencies": {
-    "jp.nobnak.solar": "https://github.com/nobnak/jp.nobnak.solar.git"
-  }
-}
-```
+1. Open **Edit** → **Project Settings**
+2. Select **Package Manager** in the left panel
+3. Click **+** to add a new scoped registry:
+   - **Name**: `OpenUPM`
+   - **URL**: `https://package.openupm.com`
+   - **Scope**: `jp.nobnak`
+4. Click **Save**
+5. Open **Window** → **Package Manager**
+6. Change dropdown from "Unity Registry" to "My Registries"
+7. Search for `jp.nobnak.solar` and click **Install**
 
 ## Quick Start
 
