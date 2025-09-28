@@ -439,6 +439,28 @@ public class SolarPositionDemo : MonoBehaviour {
         }
         
         /// <summary>
+        /// 設定値を検証・修正する
+        /// </summary>
+        public void ValidateSettings() {
+            // 基本的な範囲チェック
+            year = Mathf.Max(1, year);
+            month = Mathf.Clamp(month, 1, 12);
+            hour = Mathf.Clamp(hour, 0, 23);
+            minute = Mathf.Clamp(minute, 0, 59);
+            
+            // 月に応じて日数を制限
+            int maxDays = System.DateTime.DaysInMonth(year, month);
+            day = Mathf.Clamp(day, 1, maxDays);
+        }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// エディターで値が変更された際の検証
+        /// </summary>
+        void OnValidate() => ValidateSettings();
+#endif
+        
+        /// <summary>
         /// DateTimeOffsetを取得
         /// </summary>
         /// <returns>設定に基づくDateTimeOffset</returns>
@@ -446,6 +468,7 @@ public class SolarPositionDemo : MonoBehaviour {
             if (useCurrentTime) {
                 return DateTimeOffset.Now;
             } else {
+                ValidateSettings(); // 設定値を検証・修正
                 DateTime localDateTime = new DateTime(year, month, day, hour, minute, 0);
                 return new DateTimeOffset(localDateTime, TimeZoneInfo.Local.GetUtcOffset(localDateTime));
             }
