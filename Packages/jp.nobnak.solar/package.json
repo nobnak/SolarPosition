@@ -1,7 +1,7 @@
 {
   "name": "jp.nobnak.solar",
   "displayName": "Solar Position Calculator",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "description": "A Unity package for calculating solar position (elevation and azimuth angles) in the horizontal coordinate system based on date, time, latitude, and longitude.",
   "unity": "2019.4",
   "keywords": [
@@ -20,5 +20,17 @@
     "email": "nobu.nakata@gmail.com",
     "url": "https://github.com/nobnak"
   },
-  "category": "Utilities"
+  "category": "Utilities",
+  "samples": [
+    {
+      "displayName": "DateTime Demo",
+      "description": "Basic example demonstrating solar position calculation using date and time inputs. Shows how to calculate sun elevation and azimuth angles for a specific datetime.",
+      "path": "Samples~/DateTime"
+    },
+    {
+      "displayName": "Yearly Solar Animation",
+      "description": "Advanced example showing year-round solar movement animation. Includes sun direction controller, building shadows, and materials for realistic solar simulation throughout the year.",
+      "path": "Samples~/YearlyAnimation"
+    }
+  ]
 }
