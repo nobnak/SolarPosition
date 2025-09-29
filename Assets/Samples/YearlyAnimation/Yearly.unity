@@ -1190,7 +1190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   latitude: 35.6762
   longitude: 139.6503
-  targetHour: 16
+  targetHour: 14
   targetMinute: 0
   year: 2025
   sunDirectionController: {fileID: 143502697}
