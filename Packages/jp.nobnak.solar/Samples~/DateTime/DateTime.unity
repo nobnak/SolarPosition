@@ -260,7 +260,7 @@ MonoBehaviour:
     year: 2025
     month: 7
     day: 1
-    hour: 3
+    hour: 9
     minute: 0
     latitude: 51
     longitude: -0.12
@@ -299,8 +299,8 @@ MonoBehaviour:
       latitude: -33.8688
       longitude: 151.2093
   solarPosition:
-    elevation: 18.41709
-    azimuth: 284.25998
+    elevation: 44.91265
+    azimuth: 110.59466
     latitude: 51
     longitude: -0.12
 --- !u!4 &97679656
@@ -342,7 +342,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143502695}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.1263273, y: -0.60596085, z: -0.09823697, w: 0.77923197}
+  m_LocalRotation: {x: -0.2174675, y: 0.7597771, z: 0.31403166, w: 0.52614707}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -437,8 +437,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18773147, y: -0.15398961, z: 0.029814528, w: 0.96961606}
-  m_LocalPosition: {x: 143.28879, y: 170.92769, z: -385.45834}
+  m_LocalRotation: {x: 0.30212036, y: -0.21971388, z: 0.07177601, w: 0.9248229}
+  m_LocalPosition: {x: 18.340914, y: 22.444002, z: -38.84607}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
