@@ -1,1 +1,0 @@
-"Stonehenge England - VR" (https://skfb.ly/6QXqU) by GSXNet is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
