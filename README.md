@@ -2,6 +2,8 @@
 
 A Unity package for calculating solar position (elevation and azimuth angles) based on date, time, latitude, and longitude.
 
+[![Example](http://img.youtube.com/vi/yEXLL2l7BfA/hqdefault.jpg)](https://youtu.be/yEXLL2l7BfA)
+
 ## Features
 
 - **Accurate Solar Position**: Calculate solar elevation and azimuth angles using astronomical algorithms
