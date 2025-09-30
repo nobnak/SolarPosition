@@ -150,7 +150,11 @@ public class YearlySolarRotation : MonoBehaviour {
         var startDate = new DateTime(year, 1, 1);
         var targetDate = startDate.AddDays(dayOfYear - 1);
         var targetDateTime = new DateTime(targetDate.Year, targetDate.Month, targetDate.Day, targetHour, targetMinute, 0);
-        var dateTimeOffset = new DateTimeOffset(targetDateTime, TimeSpan.FromHours(9)); // JST
+        
+        // 経度ベースのタイムゾーンオフセット計算（15度で1時間、15分単位で丸め）
+        // 東経が正、西経が負。例：東京(139.65°) = UTC+9:15, ロンドン(0°) = UTC+0:00, ニューヨーク(-74°) = UTC-5:00
+        var roundedOffsetHours = GetRoundedTimezoneOffset();
+        var dateTimeOffset = new DateTimeOffset(targetDateTime, TimeSpan.FromHours(roundedOffsetHours));
         
         return SolarPositionCalculator.Calculate(dateTimeOffset, latitude, longitude);
     }
@@ -159,6 +163,32 @@ public class YearlySolarRotation : MonoBehaviour {
     /// 現在の年の日数を取得
     /// </summary>
     public int GetDaysInYear() => DateTime.IsLeapYear(year) ? 366 : 365;
+    
+    /// <summary>
+    /// 経度から丸められたタイムゾーンオフセット（時間）を計算
+    /// </summary>
+    /// <returns>15分単位で丸められたオフセット時間</returns>
+    private double GetRoundedTimezoneOffset() {
+        var longitudeOffsetHours = longitude / 15.0;
+        // 15分単位で丸める（0.25時間 = 15分）
+        // 例：9.31 → 9.25, 9.38 → 9.5, 9.13 → 9.0
+        return Math.Round(longitudeOffsetHours * 4) / 4.0;
+    }
+    
+    /// <summary>
+    /// タイムゾーンオフセットの表示文字列を生成
+    /// </summary>
+    /// <returns>UTC±HH:MM形式の文字列</returns>
+    private string GetTimezoneOffsetString() {
+        var longitudeOffsetHours = longitude / 15.0;
+        var roundedOffsetHours = GetRoundedTimezoneOffset();
+        
+        var offsetTimeSpan = TimeSpan.FromHours(roundedOffsetHours);
+        var offsetSign = roundedOffsetHours >= 0 ? "+" : "";
+        var offsetString = $"UTC{offsetSign}{(int)offsetTimeSpan.TotalHours:00}:{Math.Abs(offsetTimeSpan.Minutes):00}";
+        
+        return $"{offsetString} (生値: {longitudeOffsetHours:F2})";
+    }
     
     
     
@@ -258,7 +288,9 @@ public class YearlySolarRotation : MonoBehaviour {
         debugInfo = $"日: {dayOfYear}/{GetDaysInYear()}\n" +
                    $"日付: {targetDate:yyyy-MM-dd}\n" +
                    $"高度: {solarPosition.elevation:F2}°\n" +
-                   $"方位: {solarPosition.azimuth:F2}°";
+                   $"方位: {solarPosition.azimuth:F2}°\n" +
+                   $"経度: {longitude:F4}°\n" +
+                   $"オフセット: {GetTimezoneOffsetString()}";
     }
     
     /// <summary>
@@ -298,7 +330,9 @@ public class YearlySolarRotation : MonoBehaviour {
         debugInfo = $"日: {dayOfYear}/{GetDaysInYear()}\n" +
                    $"日付: {targetDate:yyyy-MM-dd}\n" +
                    $"高度: {interpolatedElevation:F2}°\n" +
-                   $"方位: {interpolatedAzimuth:F2}°";
+                   $"方位: {interpolatedAzimuth:F2}°\n" +
+                   $"経度: {longitude:F4}°\n" +
+                   $"オフセット: {GetTimezoneOffsetString()}";
     }
     
 

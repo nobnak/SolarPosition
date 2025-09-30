@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Date Time
+  m_text: 2025/09/30 - 12:00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -280,7 +280,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143502695}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.19238845, y: -0.5507565, z: -0.13222493, w: 0.8013555}
+  m_LocalRotation: {x: 0.0023369922, y: 0.95151526, z: 0.30750778, w: -0.0072313086}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -302,8 +302,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config:
-    elevation: 27
-    azimuth: 291
+    elevation: 35.819275
+    azimuth: 180.87085
     maxIntensity: 1
     zenithColorTemperature: 5778
     horizonColorTemperature: 2000
@@ -603,7 +603,7 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 3133.4001
+  m_ColorTemperature: 3503.6135
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -1188,14 +1188,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fead457990110cf479f60520bef91a2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  latitude: 35.6762
-  longitude: 139.6503
-  targetHour: 14
+  latitude: 51.17
+  longitude: -1.82
+  targetHour: 12
   targetMinute: 0
   year: 2025
+  timeZoneId: GMT Standard Time
   sunDirectionController: {fileID: 143502697}
   dateTimeText: {fileID: 63858600}
-  autoPlayAnimation: 1
+  autoPlayAnimation: 0
   animationSpeed: 10
   showDateTime: 1
   dateTimeFormat: yyyy/MM/dd - HH:mm
