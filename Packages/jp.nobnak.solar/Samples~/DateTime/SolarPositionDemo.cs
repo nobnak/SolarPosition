@@ -197,6 +197,10 @@ public class SolarPositionDemo : MonoBehaviour {
             string mode = Application.isPlaying ? "[Runtime]" : "[Editor]";
             Debug.Log($"{mode} 太陽位置計算完了: {solarPosition}");
             Debug.Log($"{mode} 太陽の状態: {solarPosition.GetSunState()}");
+            
+            // タイムゾーン情報を表示
+            var utcOffset = config.CalculateUtcOffsetFromLongitude(config.longitude);
+            Debug.Log($"{mode} 経度{config.longitude:F2}°に基づくUTCオフセット: {utcOffset}");
         } catch (ArgumentOutOfRangeException e) {
             Debug.LogError($"日時設定エラー: {e.Message}");
         } catch (ArgumentException e) {
@@ -340,6 +344,26 @@ public class SolarPositionDemo : MonoBehaviour {
     }
     
     /// <summary>
+    /// 現在のタイムゾーン情報を表示
+    /// </summary>
+    [ContextMenu("タイムゾーン情報表示")]
+    public void ShowTimezoneInfo() {
+        var utcOffset = config.CalculateUtcOffsetFromLongitude(config.longitude);
+        string mode = Application.isPlaying ? "[Runtime]" : "[Editor]";
+        Debug.Log($"{mode} タイムゾーン情報:");
+        Debug.Log($"  経度: {config.longitude:F2}°");
+        Debug.Log($"  計算されたUTCオフセット: {utcOffset}");
+        Debug.Log($"  理論値: {config.longitude / 15.0:F2}時間");
+        
+        // 主要都市との比較
+        Debug.Log($"  主要都市との比較:");
+        Debug.Log($"    東京 (139.65°): UTC+9");
+        Debug.Log($"    ロンドン (-0.13°): UTC+0");
+        Debug.Log($"    ニューヨーク (-74.01°): UTC-5");
+        Debug.Log($"    シドニー (151.21°): UTC+10");
+    }
+    
+    /// <summary>
     /// エディタ専用: Transform出力設定をリセット
     /// </summary>
     [ContextMenu("Transform出力設定をリセット")]
@@ -414,6 +438,16 @@ public class SolarPositionDemo : MonoBehaviour {
         public float updateInterval = 1.0f;
         
         /// <summary>
+        /// 現在の経度に基づくUTCオフセットを取得（読み取り専用）
+        /// </summary>
+        public TimeSpan CurrentUtcOffset => CalculateUtcOffsetFromLongitude(longitude);
+        
+        /// <summary>
+        /// タイムゾーン情報の文字列表現を取得
+        /// </summary>
+        public string TimezoneInfo => $"経度{longitude:F2}° → UTC{CurrentUtcOffset:+#0;-0;+0}";
+        
+        /// <summary>
         /// 設定をリセットして東京の初期値に戻す
         /// </summary>
         public void ResetToTokyo() {
@@ -461,7 +495,7 @@ public class SolarPositionDemo : MonoBehaviour {
 #endif
         
         /// <summary>
-        /// DateTimeOffsetを取得
+        /// DateTimeOffsetを取得（経度に基づくタイムゾーン計算）
         /// </summary>
         /// <returns>設定に基づくDateTimeOffset</returns>
         public DateTimeOffset GetDateTimeOffset() {
@@ -470,8 +504,40 @@ public class SolarPositionDemo : MonoBehaviour {
             } else {
                 ValidateSettings(); // 設定値を検証・修正
                 DateTime localDateTime = new DateTime(year, month, day, hour, minute, 0);
-                return new DateTimeOffset(localDateTime, TimeZoneInfo.Local.GetUtcOffset(localDateTime));
+                
+                // 経度に基づいてUTCオフセットを計算
+                TimeSpan utcOffset = CalculateUtcOffsetFromLongitude(longitude);
+                
+                return new DateTimeOffset(localDateTime, utcOffset);
             }
+        }
+        
+        /// <summary>
+        /// 経度からUTCオフセットを計算
+        /// 経度15度 = 1時間のオフセット（理論値）
+        /// </summary>
+        /// <param name="longitude">経度（度）</param>
+        /// <returns>UTCオフセット</returns>
+        public TimeSpan CalculateUtcOffsetFromLongitude(float longitude) {
+            // 経度15度 = 1時間のオフセット
+            double hoursOffset = longitude / 15.0;
+            
+            // 時間を整数時間に丸める（実際のタイムゾーンは整数時間オフセットが多い）
+            int roundedHours = (int)Math.Round(hoursOffset);
+            
+            // 30分オフセットのタイムゾーンも考慮（インド、オーストラリアなど）
+            if (Math.Abs(hoursOffset - roundedHours) > 0.4) {
+                // 0.5時間（30分）オフセットを追加
+                if (hoursOffset > roundedHours) {
+                    roundedHours += 1;
+                } else {
+                    roundedHours -= 1;
+                }
+                // 30分オフセット
+                return TimeSpan.FromMinutes(roundedHours * 60 + (roundedHours >= 0 ? 30 : -30));
+            }
+            
+            return TimeSpan.FromHours(roundedHours);
         }
     }
 

@@ -8,13 +8,13 @@ public class PackageSampleEmbed {
     
     static PackageSampleEmbed() {
         // スクリプトのコンパイルが完了したときに呼ばれる
-        CompilationPipeline.compilationFinished += OnCompilationFinished;
+        CompilationPipeline.compilationStarted += OnCompilationStarted;
     }
     
     private const string SAMPLES_SOURCE_PATH = "Assets/Samples";
     private const string SAMPLES_DEST_PATH = "Packages/jp.nobnak.solar/Samples~";
 
-    static void OnCompilationFinished(object context) {
+    static void OnCompilationStarted(object context) {
          Debug.Log("OnPreprocessBuild: サンプルファイルをパッケージにコピー中...");
         CopySamplesToPackage();
     }
